@@ -1,46 +1,20 @@
-import Layout from "../components/Layout";
-import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import useSWR from 'swr';
+
+import Layout from "../components/Layout";
+import PostLink from "../components/PostLink";
+import { NextPage } from "next";
+
+interface IShow {
+  id: number;
+  name: string;
+};
 
 function fetcher(url) {
   return fetch(url).then(r => r.json());
 }
 
-const PostLink = ({ show }) => (
-  <>
-    <li key={show.id}>
-      <Link href="/p/[id]" as={`/p/${show.id}`}>
-        <a>{show.name}</a>
-      </Link>
-    </li>
-    <style jsx>{`
-      a {
-        font-family: "Arial";
-      }
-
-      ul {
-        padding: 0;
-      }
-
-      li {
-        list-style: none;
-        margin: 5px 0;
-      }
-
-      a {
-        text-decoration: none;
-        color: blue;
-      }
-
-      a:hover {
-        opacity: 0.6;
-      }
-    `}</style>
-  </>
-);
-
-const Index = props => {
+const Index: NextPage<{ shows: IShow[]}> = props => {
   const { data, error } = useSWR('/api/randomQuote', fetcher);
   const author = data?.author;
   let quote = data?.quote;
